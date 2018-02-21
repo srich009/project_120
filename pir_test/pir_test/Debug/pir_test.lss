@@ -3,31 +3,31 @@ pir_test.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000004  00800100  000001f4  00000288  2**0
+  0 .data         00000004  00800100  0000021e  000002b2  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         000001f4  00000000  00000000  00000094  2**1
+  1 .text         0000021e  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000006  00800104  00800104  0000028c  2**0
+  2 .bss          00000006  00800104  00800104  000002b6  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  0000028c  2**0
+  3 .comment      00000030  00000000  00000000  000002b6  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000002bc  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000002e8  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000050  00000000  00000000  000002fc  2**0
+  5 .debug_aranges 00000050  00000000  00000000  00000328  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   0000097b  00000000  00000000  0000034c  2**0
+  6 .debug_info   000009b3  00000000  00000000  00000378  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 0000085e  00000000  00000000  00000cc7  2**0
+  7 .debug_abbrev 0000087c  00000000  00000000  00000d2b  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000312  00000000  00000000  00001525  2**0
+  8 .debug_line   0000035a  00000000  00000000  000015a7  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000000a4  00000000  00000000  00001838  2**2
+  9 .debug_frame  000000a4  00000000  00000000  00001904  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000467  00000000  00000000  000018dc  2**0
+ 10 .debug_str    00000477  00000000  00000000  000019a8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00000063  00000000  00000000  00001d43  2**0
+ 11 .debug_loc    0000011b  00000000  00000000  00001e1f  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000040  00000000  00000000  00001da6  2**0
+ 12 .debug_ranges 00000040  00000000  00000000  00001f3a  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -116,8 +116,8 @@ Disassembly of section .text:
   98:	11 e0       	ldi	r17, 0x01	; 1
   9a:	a0 e0       	ldi	r26, 0x00	; 0
   9c:	b1 e0       	ldi	r27, 0x01	; 1
-  9e:	e4 ef       	ldi	r30, 0xF4	; 244
-  a0:	f1 e0       	ldi	r31, 0x01	; 1
+  9e:	ee e1       	ldi	r30, 0x1E	; 30
+  a0:	f2 e0       	ldi	r31, 0x02	; 2
   a2:	00 e0       	ldi	r16, 0x00	; 0
   a4:	0b bf       	out	0x3b, r16	; 59
   a6:	02 c0       	rjmp	.+4      	; 0xac <__do_copy_data+0x14>
@@ -140,8 +140,8 @@ Disassembly of section .text:
   bc:	aa 30       	cpi	r26, 0x0A	; 10
   be:	b2 07       	cpc	r27, r18
   c0:	e1 f7       	brne	.-8      	; 0xba <.do_clear_bss_loop>
-  c2:	81 d0       	rcall	.+258    	; 0x1c6 <main>
-  c4:	95 c0       	rjmp	.+298    	; 0x1f0 <_exit>
+  c2:	94 d0       	rcall	.+296    	; 0x1ec <main>
+  c4:	aa c0       	rjmp	.+340    	; 0x21a <_exit>
 
 000000c6 <__bad_interrupt>:
   c6:	9c cf       	rjmp	.-200    	; 0x0 <__vectors>
@@ -259,79 +259,125 @@ void TimerSet(unsigned long M) {
  1a8:	08 95       	ret
 
 000001aa <sm_tick>:
-	}
-}
 
-void sm_tick()
+void sm_tick(unsigned char tmpA)
 {
+	unsigned char tmpB = 0x00; // write to portb output
+	
 	switch(state) // transitions
- 1aa:	80 91 09 01 	lds	r24, 0x0109	; 0x800109 <state>
- 1ae:	88 23       	and	r24, r24
- 1b0:	19 f0       	breq	.+6      	; 0x1b8 <sm_tick+0xe>
- 1b2:	81 30       	cpi	r24, 0x01	; 1
- 1b4:	39 f0       	breq	.+14     	; 0x1c4 <sm_tick+0x1a>
- 1b6:	04 c0       	rjmp	.+8      	; 0x1c0 <sm_tick+0x16>
+ 1aa:	90 91 09 01 	lds	r25, 0x0109	; 0x800109 <state>
+ 1ae:	91 30       	cpi	r25, 0x01	; 1
+ 1b0:	41 f0       	breq	.+16     	; 0x1c2 <sm_tick+0x18>
+ 1b2:	18 f0       	brcs	.+6      	; 0x1ba <sm_tick+0x10>
+ 1b4:	92 30       	cpi	r25, 0x02	; 2
+ 1b6:	59 f0       	breq	.+22     	; 0x1ce <sm_tick+0x24>
+ 1b8:	10 c0       	rjmp	.+32     	; 0x1da <sm_tick+0x30>
 	{
 		case START:
 		state = WAIT;
- 1b8:	81 e0       	ldi	r24, 0x01	; 1
- 1ba:	80 93 09 01 	sts	0x0109, r24	; 0x800109 <state>
+ 1ba:	81 e0       	ldi	r24, 0x01	; 1
+ 1bc:	80 93 09 01 	sts	0x0109, r24	; 0x800109 <state>
 		break;
- 1be:	08 95       	ret
+ 1c0:	13 c0       	rjmp	.+38     	; 0x1e8 <sm_tick+0x3e>
+		
 		case WAIT:
-		state = WAIT;
+		( (tmpA & 0x01) ) ? (state = ALERT) : (state = WAIT); // if motion detected or not
+ 1c2:	80 ff       	sbrs	r24, 0
+ 1c4:	11 c0       	rjmp	.+34     	; 0x1e8 <sm_tick+0x3e>
+ 1c6:	82 e0       	ldi	r24, 0x02	; 2
+ 1c8:	80 93 09 01 	sts	0x0109, r24	; 0x800109 <state>
+ 1cc:	0b c0       	rjmp	.+22     	; 0x1e4 <sm_tick+0x3a>
+		break;
+		
+		case ALERT:
+		( !(tmpA & 0x01) ) ? (state = WAIT) : (state = ALERT);
+ 1ce:	80 fd       	sbrc	r24, 0
+ 1d0:	09 c0       	rjmp	.+18     	; 0x1e4 <sm_tick+0x3a>
+ 1d2:	81 e0       	ldi	r24, 0x01	; 1
+ 1d4:	80 93 09 01 	sts	0x0109, r24	; 0x800109 <state>
+ 1d8:	07 c0       	rjmp	.+14     	; 0x1e8 <sm_tick+0x3e>
 		break;
 		
 		default:
 		state = START;
- 1c0:	10 92 09 01 	sts	0x0109, r1	; 0x800109 <state>
- 1c4:	08 95       	ret
+ 1da:	10 92 09 01 	sts	0x0109, r1	; 0x800109 <state>
+		break;
+ 1de:	04 c0       	rjmp	.+8      	; 0x1e8 <sm_tick+0x3e>
+		
+		default:
+		break;
+	}
+	
+    PORTB = tmpB;
+ 1e0:	85 b9       	out	0x05, r24	; 5
+ 1e2:	08 95       	ret
+		case WAIT:
+		tmpB = 0x00; // light off
+		break;
+		
+		case ALERT:
+		tmpB = 0x01; // light on
+ 1e4:	81 e0       	ldi	r24, 0x01	; 1
+ 1e6:	fc cf       	rjmp	.-8      	; 0x1e0 <sm_tick+0x36>
+	}
+}
 
-000001c6 <main>:
-enum SM_State{START,WAIT} state;
+void sm_tick(unsigned char tmpA)
+{
+	unsigned char tmpB = 0x00; // write to portb output
+ 1e8:	80 e0       	ldi	r24, 0x00	; 0
+ 1ea:	fa cf       	rjmp	.-12     	; 0x1e0 <sm_tick+0x36>
+
+000001ec <main>:
+enum SM_State{START,WAIT,ALERT} state;
 
 int main(void)
 {
 	// setup ports
 	DDRA = 0x00; PORTA = 0xFF; // Configure port A's 8 pins as inputs
- 1c6:	11 b8       	out	0x01, r1	; 1
- 1c8:	8f ef       	ldi	r24, 0xFF	; 255
- 1ca:	82 b9       	out	0x02, r24	; 2
+ 1ec:	11 b8       	out	0x01, r1	; 1
+ 1ee:	8f ef       	ldi	r24, 0xFF	; 255
+ 1f0:	82 b9       	out	0x02, r24	; 2
 	DDRB = 0xFF; PORTB = 0x00; // Configure port B's 8 pins as outputs
- 1cc:	84 b9       	out	0x04, r24	; 4
- 1ce:	15 b8       	out	0x05, r1	; 5
+ 1f2:	84 b9       	out	0x04, r24	; 4
+ 1f4:	15 b8       	out	0x05, r1	; 5
 	//DDRC = 0xFF; PORTC = 0x00; // Configure port C's 8 pins as outputs
 	//DDRD = 0xFF; PORTC = 0x00; // Configure port C's 8 pins as outputs
 
 	// setup timer
 	TimerOn();
- 1d0:	7b df       	rcall	.-266    	; 0xc8 <TimerOn>
-	TimerSet(500); // ms
- 1d2:	64 ef       	ldi	r22, 0xF4	; 244
- 1d4:	71 e0       	ldi	r23, 0x01	; 1
- 1d6:	80 e0       	ldi	r24, 0x00	; 0
- 1d8:	90 e0       	ldi	r25, 0x00	; 0
- 1da:	d6 df       	rcall	.-84     	; 0x188 <TimerSet>
+ 1f6:	68 df       	rcall	.-304    	; 0xc8 <TimerOn>
+	TimerSet(100); // ms
+ 1f8:	64 e6       	ldi	r22, 0x64	; 100
+ 1fa:	70 e0       	ldi	r23, 0x00	; 0
+ 1fc:	80 e0       	ldi	r24, 0x00	; 0
+ 1fe:	90 e0       	ldi	r25, 0x00	; 0
+ 200:	c3 df       	rcall	.-122    	; 0x188 <TimerSet>
 	
 	// set sm initial state
 	state = START;
- 1dc:	10 92 09 01 	sts	0x0109, r1	; 0x800109 <state>
+ 202:	10 92 09 01 	sts	0x0109, r1	; 0x800109 <state>
 	
 	while(1)
 	{
-		sm_tick();
- 1e0:	e4 df       	rcall	.-56     	; 0x1aa <sm_tick>
+		tmpA = ~PINA; // read input pin
+		
+		sm_tick(tmpA);
+ 206:	80 b1       	in	r24, 0x00	; 0
+ 208:	80 95       	com	r24
+ 20a:	cf df       	rcall	.-98     	; 0x1aa <sm_tick>
+		
 		while(!TimerFlag){}
- 1e2:	80 91 08 01 	lds	r24, 0x0108	; 0x800108 <TimerFlag>
- 1e6:	88 23       	and	r24, r24
- 1e8:	e1 f3       	breq	.-8      	; 0x1e2 <main+0x1c>
+ 20c:	80 91 08 01 	lds	r24, 0x0108	; 0x800108 <TimerFlag>
+ 210:	88 23       	and	r24, r24
+ 212:	e1 f3       	breq	.-8      	; 0x20c <main+0x20>
 		TimerFlag = 0;
- 1ea:	10 92 08 01 	sts	0x0108, r1	; 0x800108 <TimerFlag>
+ 214:	10 92 08 01 	sts	0x0108, r1	; 0x800108 <TimerFlag>
 	}
- 1ee:	f8 cf       	rjmp	.-16     	; 0x1e0 <main+0x1a>
+ 218:	f6 cf       	rjmp	.-20     	; 0x206 <main+0x1a>
 
-000001f0 <_exit>:
- 1f0:	f8 94       	cli
+0000021a <_exit>:
+ 21a:	f8 94       	cli
 
-000001f2 <__stop_program>:
- 1f2:	ff cf       	rjmp	.-2      	; 0x1f2 <__stop_program>
+0000021c <__stop_program>:
+ 21c:	ff cf       	rjmp	.-2      	; 0x21c <__stop_program>

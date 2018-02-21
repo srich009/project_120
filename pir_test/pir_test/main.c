@@ -1,4 +1,6 @@
-// basic setup -- SyncSM
+// basic setup -- PIR
+// get pir to detect motion, signal input on PA0
+// output to led on PB0 when motion detected,
 //-----------------------
 
 // libraries
@@ -66,10 +68,10 @@ void TimerSet(unsigned long M) {
 //----------------------------------------------------------------
 
 // function declarations
-void sm_tick();
+void sm_tick(unsigned char tmpA);
 
 // global variables
-enum SM_State{START,WAIT} state;
+enum SM_State{START,WAIT,ALERT} state;
 
 int main(void)
 {
@@ -81,21 +83,28 @@ int main(void)
 
 	// setup timer
 	TimerOn();
-	TimerSet(500); // ms
+	TimerSet(100); // ms
 	
 	// set sm initial state
 	state = START;
 	
+	unsigned char tmpA = 0x00; // temp var to read input
+	
 	while(1)
 	{
-		sm_tick();
+		tmpA = ~PINA; // read input pin
+		
+		sm_tick(tmpA);
+		
 		while(!TimerFlag){}
 		TimerFlag = 0;
 	}
 }
 
-void sm_tick()
+void sm_tick(unsigned char tmpA)
 {
+	unsigned char tmpB = 0x00; // write to portb output
+	
 	switch(state) // transitions
 	{
 		case START:
@@ -103,7 +112,11 @@ void sm_tick()
 		break;
 		
 		case WAIT:
-		state = WAIT;
+		( (tmpA & 0x01) ) ? (state = ALERT) : (state = WAIT); // if motion detected or not
+		break;
+		
+		case ALERT:
+		( !(tmpA & 0x01) ) ? (state = WAIT) : (state = ALERT);
 		break;
 		
 		default:
@@ -114,9 +127,16 @@ void sm_tick()
 	switch(state) // actions
 	{
 		case WAIT:
+		tmpB = 0x00; // light off
+		break;
+		
+		case ALERT:
+		tmpB = 0x01; // light on
 		break;
 		
 		default:
 		break;
 	}
+	
+    PORTB = tmpB;
 }
