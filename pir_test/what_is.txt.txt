@@ -1,0 +1,21 @@
+main1 - pir
+* PA0 = pir input
+* PB0 = led output
+---------------------------
+
+main2 - pir (timer.h)
+* PA0 = pir input
+* PB0 = led output
+---------------------------
+
+main3 - pir && speaker (timer.h, pwm.h)
+* PA0 = pir input
+* PB0 = led output
+* PB6 = speaker output pwm
+---------------------------
+
+main4 - pir && speaker (timer.h, pwm.h)
+* PA0 = pir input
+* PC0 = led output
+* PB6 = speaker output pwm
+---------------------------
