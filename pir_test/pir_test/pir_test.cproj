@@ -55,18 +55,19 @@
       </ToolNumber>
       <ToolName>Simulator</ToolName>
     </com_atmel_avrdbg_tool_simulator>
-    <avrtoolinterface />
+    <avrtoolinterface>ISP</avrtoolinterface>
     <com_atmel_avrdbg_tool_atmelice>
-      <ToolOptions xmlns="">
+      <ToolOptions>
         <InterfaceProperties>
+          <IspClock>1624905</IspClock>
         </InterfaceProperties>
-        <InterfaceName>
-        </InterfaceName>
+        <InterfaceName>ISP</InterfaceName>
       </ToolOptions>
-      <ToolType xmlns="">com.atmel.avrdbg.tool.atmelice</ToolType>
-      <ToolNumber xmlns="">J41800087627</ToolNumber>
-      <ToolName xmlns="">Atmel-ICE</ToolName>
+      <ToolType>com.atmel.avrdbg.tool.atmelice</ToolType>
+      <ToolNumber>J41800087627</ToolNumber>
+      <ToolName>Atmel-ICE</ToolName>
     </com_atmel_avrdbg_tool_atmelice>
+    <avrtoolinterfaceclock>1624905</avrtoolinterfaceclock>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -149,6 +150,12 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="main3.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="pwm.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="timer.h">
       <SubType>compile</SubType>
     </Compile>
