@@ -1,3 +1,7 @@
+/*
+pwm functions to use the port PB6
+*/
+
 //----------------------
 
 // 0.954 hz is lowest frequency possible with this function,
